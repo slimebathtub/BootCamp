@@ -78,7 +78,7 @@ class Center:
 # %% fetch the table from the HTML
 # input: html string, output: the table element
 # ---------- (TODO) HTML → table ----------
-def find_hours_table(html: str) -> Optional[Tag]:
+def find_hours_table(html: str):
     table = None
 
     return table
