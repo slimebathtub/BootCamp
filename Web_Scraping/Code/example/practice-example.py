@@ -67,12 +67,12 @@ def parse_quotes(html):
     return data
 
 # testing function
-quotes = parse_quotes(response_txt)
+quotes_dic = parse_quotes(response_txt)
 
 # check if the funcion works
 print("-"*30)
-print(len(quotes))  # total number of quotes
-quotes[:3]  # first 3 quotes
+print(len(quotes_dic))  # total number of quotes
+quotes_dic[:3]  # first 3 quotes
 print("-"*30)
 
 # %%

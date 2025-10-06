@@ -42,3 +42,5 @@ pred = pipe.predict(X_test)
 # accuracy
 accuracy = (pred == y_test).mean()
 print(f"Model accuracy: {accuracy:.2%}")
+
+# %%

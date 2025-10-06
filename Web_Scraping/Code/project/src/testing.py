@@ -14,7 +14,7 @@ def _check(label, condition, expected=None, got=None):
         return 0, 1
 
 
-# %% ==== 1) find_hours_table：安全版 smoke ====
+# %% ==== 1) find_hours_table：safely smoke ====
 def smoke_find_hours_table_safe():
     print("=== Smoke: find_hours_table ===")
     html_precise = """
@@ -49,7 +49,7 @@ def smoke_find_hours_table_safe():
     print(f"-- Result: {passed}/{total} passed\n")
 
 
-# %% ==== 2) extract_day_time_rows：安全版 smoke ====
+# %% ==== 2) extract_day_time_rows：safely smoke ====
 def _mk_table(inner, cls='table table-striped table-csm'):
     return f'<table class="{cls}"><tbody>{inner}</tbody></table>'
 
@@ -58,7 +58,7 @@ def smoke_extract_day_time_rows_safe():
     passed = total = 0
 
     try:
-        # Case 1: 需要 expand
+        # Case 1: need expand (mon-thu)
         html_range = _mk_table("""
           <tr><td>Mon-Thu</td><td>8:00 am - 5:00 pm</td></tr>
           <tr><td>Fri</td><td>8:00 am - 1:00 pm</td></tr>
@@ -74,7 +74,7 @@ def smoke_extract_day_time_rows_safe():
         cond3 = any(r["Day"] == "Friday" for r in rows_range)
         p, t = _check("range contains Friday", cond3, True, cond3); passed+=p; total+=t
 
-        # Case 2: 不需要 expand（完整星期名）
+        # Case 2: no expand（copmltie day name）
         html_full = _mk_table("""
           <tr><td>Monday</td><td>9:00 am - 4:00 pm</td></tr>
           <tr><td>Friday</td><td>10:00 am - 2:00 pm</td></tr>
@@ -91,7 +91,7 @@ def smoke_extract_day_time_rows_safe():
                       rows_full == expected_full, expected_full, rows_full)
         passed+=p; total+=t
 
-        # Case 3: 多一欄也要能忽略
+        # Case 3: ignore the extra columns
         html_extra_cols = _mk_table("""
           <tr><td>Tue</td><td>9-4</td><td>note</td></tr>
         """)
@@ -110,7 +110,7 @@ def smoke_extract_day_time_rows_safe():
     print(f"-- Result: {passed}/{total} passed\n")
 
 
-#%% ==== 3) rows_to_dataframe：安全版 smoke ====
+#%% ==== 3) rows_to_dataframe: safely smoke ====
 def smoke_rows_to_dataframe_safe():
     print("=== Smoke: rows_to_dataframe ===")
     passed = total = 0
@@ -123,7 +123,7 @@ def smoke_rows_to_dataframe_safe():
         df = rows_to_dataframe(rows)
         print("[df]:\n", df)
 
-        # 去重後應只保留第一筆 Tuesday=8-5
+        # delete repeate Tuesday=8-5
         cond_dup = (df[df["Day"]=="Tuesday"]["Time"].iloc[0] == "8-5") and (df["Day"].value_counts().get("Tuesday",0)==1)
         p, t = _check("deduplicate keeps first Tuesday=8-5 and single entry",
                       cond_dup, True, cond_dup)
@@ -141,7 +141,7 @@ def smoke_rows_to_dataframe_safe():
     print(f"-- Result: {passed}/{total} passed\n")
 
 
-#%% ==== 一鍵執行（你也可以只呼叫其中幾個） ====
+#%% ==== testing ====
 smoke_find_hours_table_safe()
 smoke_extract_day_time_rows_safe()
 smoke_rows_to_dataframe_safe()

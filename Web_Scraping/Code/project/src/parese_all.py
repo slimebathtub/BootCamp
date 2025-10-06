@@ -1,7 +1,8 @@
 # %% import
+from typing import Optional
 from bs4 import BeautifulSoup
 import pandas as pd
-from pyparsing import Optional, Tag
+from pyparsing import Tag
 import requests
 import time
 import random
@@ -63,7 +64,7 @@ class Center:
 
     def fetch_time_data(self):
         self.html = fetcher(self.url)
-        self.time_data_df = final_combine_parse_hours_table(self.html)
+        self.time_data_df = parse_hours_table(self.html)
         return self.time_data_df
 
     # For debugging
@@ -76,27 +77,47 @@ class Center:
         self.time_data_df.to_csv(filname, index=False)
 
 # %% fetch the table from the HTML
-# input: html string, output: the table element
 # ---------- (TODO) HTML → table ----------
-def find_hours_table(html: str) -> Optional[Tag]:
-    table = None
-
+def find_hours_table(html: str)-> Optional[Tag]:
+    soup = BeautifulSoup(html, "lxml")
+    table = soup.select_one("table.table.table-striped.table-csm")
+    if table is None:
+        table = soup.find("table")
     return table
 
 # %% fetch rows from the table
 # ---------- (TODO) table → rows ----------
 def extract_day_time_rows(table) -> list[dict]:
     rows = []
+    if table is None:
+        return rows
+    
+    tbody = table.find("tbody") or table
+    for tr in tbody.find_all("tr"):
+        tds = tr.find_all("td")
+        if len(tds) < 2:
+            continue
+
+        day_text = tds[0].get_text(strip=True)
+        time_text = tds[1].get_text(" ", strip=True)
+
+        # --- don't change here ---
+        # expand the day range
+        expanded_days = expand_day_range(day_text)
+        for d in expanded_days:
+            rows.append({"Day": d, "Time": time_text})
 
     return rows
 
 # %% convert rows to DataFrame
 # ---------- (TODO) rows → DataFrame----------
 def rows_to_dataframe(rows: list[dict]) -> pd.DataFrame:
-    df = None
+    if not rows:
+        return pd.DataFrame(columns=["Day", "Time"])
+    df = pd.DataFrame(rows, columns=["Day", "Time"])
 
     # delete the repetitive days if any
-    
+    df = df.drop_duplicates(subset=["Day"], keep="first")
     return df
 
 # %% complete the DataFrame
@@ -119,11 +140,9 @@ def finalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 # %% main final function
 # ---------- HTML → DataFrame ----------
-def final_combine_parse_hours_table(html: str) -> pd.DataFrame:
+def parse_hours_table(html: str) -> pd.DataFrame:
     table = find_hours_table(html)
     rows = extract_day_time_rows(table)
     df = rows_to_dataframe(rows)
     df = finalize_dataframe(df)
     return df
-
-# %%

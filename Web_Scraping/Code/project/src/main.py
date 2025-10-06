@@ -7,7 +7,7 @@ urls = [
     "https://collegeofsanmateo.edu/writing"
 ]
 
-from parese import Center, extract_day_time_rows, find_hours_table, rows_to_dataframe
+from parese_all import Center, extract_day_time_rows, find_hours_table, rows_to_dataframe
 
 Centers = [
     Center(1, "MRC", "https://collegeofsanmateo.edu/mrc"),
