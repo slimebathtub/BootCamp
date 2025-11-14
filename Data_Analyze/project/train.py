@@ -12,7 +12,6 @@ def read_data(file_path):
     return pd.read_csv(file_path)
 
 data = read_data('mushrooms.csv')
-# train_data.head()
 data.info()
 
 # %%

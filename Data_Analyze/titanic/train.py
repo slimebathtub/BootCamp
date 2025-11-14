@@ -26,9 +26,11 @@ test_data.head()
 
 # %%
 women = train_data.loc[train_data.Sex == 'female']["Survived"]
-# add all the True(1) caluse and divided by the total
-rate_women = sum(women)/len(women)
-
+w_class1 = train_data.loc[(train_data.Sex == 'female') & (train_data.Pclass == 1)]["Survived"]
+# add all the True(1) clauses and divide by the total
+rate_women = women.mean()
+rate_women_pclass1 = w_class1.mean() if (len(w_class1) > 0) else float('nan')
+print("% of women in Pclass 1 who survived:", rate_women_pclass1)
 print("% of women who survived:", rate_women)
 # %%
 men = train_data.loc[train_data.Sex == 'male']["Survived"]
