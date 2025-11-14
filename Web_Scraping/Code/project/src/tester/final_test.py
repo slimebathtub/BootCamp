@@ -1,5 +1,5 @@
 # %%
-from parese import extract_day_time_rows, finalize_dataframe, find_hours_table, rows_to_dataframe
+from scraper.parese import extract_day_time_rows, finalize_dataframe, find_hours_table, rows_to_dataframe
 
 
 # %% smoke test for all three TODOs on a given HTML

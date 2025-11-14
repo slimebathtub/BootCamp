@@ -1,6 +1,5 @@
-# %% ==== 小工具：通用的檢查器 ====
-from parese import extract_day_time_rows, find_hours_table, rows_to_dataframe
-
+#%% 
+from scraper.parese import extract_day_time_rows, find_hours_table, rows_to_dataframe
 
 def _check(label, condition, expected=None, got=None):
     if condition:
@@ -15,7 +14,7 @@ def _check(label, condition, expected=None, got=None):
 
 
 # %% ==== 1) find_hours_table：safely smoke ====
-def smoke_find_hours_table_safe():
+def smoke_find_hours_table():
     print("=== Smoke: find_hours_table ===")
     html_precise = """
     <html><body>
@@ -53,7 +52,7 @@ def smoke_find_hours_table_safe():
 def _mk_table(inner, cls='table table-striped table-csm'):
     return f'<table class="{cls}"><tbody>{inner}</tbody></table>'
 
-def smoke_extract_day_time_rows_safe():
+def smoke_extract_day_time_rows():
     print("=== Smoke: extract_day_time_rows ===")
     passed = total = 0
 
@@ -111,7 +110,7 @@ def smoke_extract_day_time_rows_safe():
 
 
 #%% ==== 3) rows_to_dataframe: safely smoke ====
-def smoke_rows_to_dataframe_safe():
+def smoke_rows_to_dataframe():
     print("=== Smoke: rows_to_dataframe ===")
     passed = total = 0
     try:
@@ -142,6 +141,8 @@ def smoke_rows_to_dataframe_safe():
 
 
 #%% ==== testing ====
-smoke_find_hours_table_safe()
-smoke_extract_day_time_rows_safe()
-smoke_rows_to_dataframe_safe()
+smoke_find_hours_table()
+smoke_extract_day_time_rows()
+smoke_rows_to_dataframe()
+
+# %%
