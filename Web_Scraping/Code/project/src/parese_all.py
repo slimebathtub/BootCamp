@@ -78,7 +78,7 @@ class Center:
 
 # %% fetch the table from the HTML
 # ---------- (TODO) HTML → table ----------
-def find_hours_table(html: str)-> Optional[Tag]:
+def find_hours_table(html: str):
     soup = BeautifulSoup(html, "lxml")
     table = soup.select_one("table.table.table-striped.table-csm")
     if table is None:

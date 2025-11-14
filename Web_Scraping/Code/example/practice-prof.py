@@ -11,3 +11,5 @@ print("1. response code: ", response.status_code)   # check if the response is 2
 response_txt = response.text
 print("2. first 500 words: \n", response_txt[:500])  # the 500 words of the html
 # %%
+
+'''LEGAL ISSUE NOTE'''
