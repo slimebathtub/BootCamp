@@ -1,3 +1,5 @@
+from scraper.parese import extract_day_time_rows, find_hours_table, rows_to_dataframe
+from scraper.center import Center
 
 urls = [
     "https://collegeofsanmateo.edu/mrc"
@@ -6,8 +8,6 @@ urls = [
     "https://collegeofsanmateo.edu/esl/eslcenter.php"
     "https://collegeofsanmateo.edu/writing"
 ]
-
-from parese_all import Center, extract_day_time_rows, find_hours_table, rows_to_dataframe
 
 Centers = [
     Center(1, "MRC", "https://collegeofsanmateo.edu/mrc"),

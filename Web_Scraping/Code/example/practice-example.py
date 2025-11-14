@@ -55,25 +55,27 @@ for q in quotes[:3]: # only the first 3 quotes
 
 # %%
 # wrap the above code into a function to reuse!
+# input => html, output => dictionary
+
 def parse_quotes(html):
+    soup = BeautifulSoup(html, "html.parser")
     data = []
     for q in soup.select("div.quote"):
-        # use slect_one to get the tag that you are looking for
         text = q.select_one("span.text").get_text(strip=True)
         author = q.select_one("small.author").get_text(strip=True)
-        
-        # store the data in a list of dictionary
-        data.append({"text": text, "author": author})
+        tags = [tag.get_text(strip=True) for tag in q.select("a.tag")]
+        data.append({"text": text, "author": author, "tags": tags})
     return data
 
 # testing function
-quotes_dic = parse_quotes(response_txt)
-
-# check if the funcion works
-print("-"*30)
-print(len(quotes_dic))  # total number of quotes
-quotes_dic[:3]  # first 3 quotes
-print("-"*30)
+quotes_data = parse_quotes(response_txt)
+print("-" * 30)
+print("total quotes:", len(quotes_data))
+for d in quotes_data[:3]:
+    print("sentence:", d["text"])
+    print("author:", d["author"])
+    print("tag:", d["tags"])
+    print("-" * 30)
 
 # %%
 # save the data into a file(csv)
@@ -84,7 +86,7 @@ with open("quotes.csv", "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["text", "author", "tags"])
     
-    for q in quotes:
+    for q in quotes_data:
         text = q.find("span", class_="text").get_text()
         author = q.find("small", class_="author").get_text()
         tags = ",".join([tag.get_text() for tag in q.find_all("a", class_="tag")])
