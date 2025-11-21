@@ -87,9 +87,9 @@ with open("quotes.csv", "w", newline="", encoding="utf-8") as f:
     writer.writerow(["text", "author", "tags"])
     
     for q in quotes_data:
-        text = q.find("span", class_="text").get_text()
-        author = q.find("small", class_="author").get_text()
-        tags = ",".join([tag.get_text() for tag in q.find_all("a", class_="tag")])
+        text = q["text"]
+        author = q["author"]
+        tags = ",".join(q["tags"])
         writer.writerow([text, author, tags])
 
 print("save to quotes.csv!")
@@ -100,10 +100,10 @@ print("save to quotes.csv!")
 import pandas as pd
 
 data = []
-for q in quotes:
-    text = q.find("span", class_="text").get_text()
-    author = q.find("small", class_="author").get_text()
-    tags = ",".join([tag.get_text() for tag in q.find_all("a", class_="tag")])
+for q in quotes_data:
+    text = q["text"]
+    author = q["author"]
+    tags = ",".join(q["tags"])
     data.append({"text": text, "author": author, "tags": tags})
 
 df = pd.DataFrame(data)
@@ -115,7 +115,18 @@ print("save to quotes.xlsx")
 
 # %%
 # NOTE: 
+
+ALL_TAGS = []
+
+for q in quotes_data:
+    ALL_TAGS += q["tags"]
+    ALL_TAGS = list(set(ALL_TAGS))
+    
+for tag in ALL_TAGS:
+    print(tag)
+
 ## html = requests.get(url).text 
 ## soupt = BeautifulSoup(html, "lxml")
 ## soup.select("the tag you want to find")
 ## soup.select_one("the tag you want to find").get_text(strip=True)
+# %%

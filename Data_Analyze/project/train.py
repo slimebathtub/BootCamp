@@ -1,7 +1,13 @@
 # %%
+from pathlib import Path
+
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    StratifiedKFold,
+    cross_val_score,
+    train_test_split,
+)
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier 
@@ -11,7 +17,8 @@ def read_data(file_path):
     """Reads a CSV file and returns a pandas DataFrame."""
     return pd.read_csv(file_path)
 
-data = read_data('mushrooms.csv')
+data_path = Path(__file__).resolve().parent / 'mushrooms.csv'
+data = read_data(data_path)
 data.info()
 
 # %%
@@ -41,5 +48,19 @@ pred = pipe.predict(X_test)
 # accuracy
 accuracy = (pred == y_test).mean()
 print(f"Model accuracy: {accuracy:.2%}")
+
+# %%
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+depth_grid = [None, 7, 5, 3, 1]
+
+for depth in depth_grid:
+    model = DecisionTreeClassifier(max_depth=depth, random_state=42)
+    pipe = Pipeline([('prep', preprocess), ('model', model)])
+    scores = cross_val_score(pipe, x, y, cv=cv, scoring='accuracy')
+    depth_label = "full depth" if depth is None else f"max_depth={depth}"
+    print(
+        f"{depth_label:<12} | mean acc: {scores.mean():.3f} "
+        f"| std: {scores.std():.3f}"
+    )
 
 # %%
